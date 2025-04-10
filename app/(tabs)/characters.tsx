@@ -1,17 +1,14 @@
-import { View, Text, FlatList, Image, Dimensions, TouchableOpacity } from 'react-native';
-import { useQuery } from '@apollo/client';
-import { gql } from '@apollo/client';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { Link } from 'expo-router';
-import { Character, CharactersResponse } from '../types/character';
 import React from 'react';
+import { View, Text, FlatList, TouchableOpacity, Image } from 'react-native';
+import { useRouter } from 'expo-router';
+import { gql, useQuery } from '@apollo/client';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { useTheme } from '../context/ThemeContext';
+import { lightTheme, darkTheme } from '../theme';
+import Layout from '../components/Layout';
+import Header from '../components/Header';
 import LoadingState from '../components/LoadingState';
 import ErrorState from '../components/ErrorState';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { useRouter } from 'expo-router';
-
-const { width } = Dimensions.get('window');
-const CARD_WIDTH = width * 0.9;
 
 const GET_CHARACTERS = gql`
   query GetCharacters {
@@ -27,77 +24,85 @@ const GET_CHARACTERS = gql`
   }
 `;
 
-const CharacterItem = React.memo(({ item, onPress }: { item: Character; onPress: () => void }) => (
-  <TouchableOpacity
-    onPress={onPress}
-    className="bg-gray-800 rounded-lg overflow-hidden mb-4"
-    activeOpacity={0.7}
-  >
-    <Image
-      source={{ uri: item.image }}
-      className="w-full h-48"
-      resizeMode="cover"
-    />
-    <View className="p-4">
-      <Text className="text-white text-lg font-bold">{item.name}</Text>
-      <Text className="text-gray-400 mt-1">{item.species}</Text>
-    </View>
-  </TouchableOpacity>
-));
+interface Character {
+  id: string;
+  name: string;
+  status: string;
+  species: string;
+  image: string;
+}
 
 export default function CharactersScreen() {
-  const { loading, error, data, refetch } = useQuery<CharactersResponse>(GET_CHARACTERS);
   const router = useRouter();
+  const { isDark } = useTheme();
+  const theme = isDark ? darkTheme : lightTheme;
+  const { loading, error, data, refetch } = useQuery(GET_CHARACTERS);
 
-  if (loading) {
-    return <LoadingState message="Cargando personajes..." />;
-  }
+  if (loading) return (
+    <Layout>
+      <LoadingState />
+    </Layout>
+  );
+  
+  if (error) return (
+    <Layout>
+      <ErrorState error={error} onRetry={refetch} />
+    </Layout>
+  );
 
-  if (error) {
-    return (
-      <View className="flex-1 items-center justify-center p-4 bg-gray-900">
-        <MaterialCommunityIcons name="alert-circle" size={48} color="#ef4444" />
-        <Text className="text-red-500 text-lg font-bold mt-4 text-center">
-          ¡Ups! Algo salió mal
-        </Text>
-        <Text className="text-gray-400 text-sm mt-2 text-center">
-          {error.message || 'No pudimos cargar los personajes. Por favor, intenta de nuevo.'}
-        </Text>
-        <TouchableOpacity 
-          className="mt-4 bg-blue-500 px-6 py-2 rounded-full"
-          onPress={() => refetch()}
-        >
-          <Text className="text-white font-semibold">Reintentar</Text>
-        </TouchableOpacity>
+  const renderItem = ({ item }: { item: Character }) => (
+    <TouchableOpacity
+      className="mb-4 rounded-xl overflow-hidden"
+      style={{ backgroundColor: theme.colors.card }}
+      onPress={() => router.push(`/character/${item.id}`)}
+    >
+      <View className="flex-row">
+        <Image
+          source={{ uri: item.image }}
+          className="w-24 h-24"
+          style={{ backgroundColor: theme.colors.surface }}
+        />
+        <View className="flex-1 p-4">
+          <Text className="text-lg font-bold mb-1" style={{ color: theme.colors.text }}>
+            {item.name}
+          </Text>
+          <View className="flex-row items-center mb-1">
+            <View 
+              className="w-2 h-2 rounded-full mr-2"
+              style={{ 
+                backgroundColor: 
+                  item.status === 'Alive' ? theme.colors.success :
+                  item.status === 'Dead' ? theme.colors.error :
+                  theme.colors.warning
+              }}
+            />
+            <Text style={{ color: theme.colors.textSecondary }}>
+              {item.status} - {item.species}
+            </Text>
+          </View>
+        </View>
+        <MaterialCommunityIcons 
+          name="chevron-right" 
+          size={24} 
+          color={theme.colors.textSecondary}
+          style={{ marginRight: 16, alignSelf: 'center' }}
+        />
       </View>
-    );
-  }
+    </TouchableOpacity>
+  );
 
   return (
-    <SafeAreaView className="flex-1 bg-background" edges={['bottom']}>
-      <FlatList
-        data={data?.characters?.results}
-        keyExtractor={(item) => item.id.toString()}
-        renderItem={({ item }) => (
-          <CharacterItem
-            item={item}
-            onPress={() => router.push(`/character/${item.id}`)}
-          />
-        )}
-        contentContainerStyle={{ padding: 16 }}
-        showsVerticalScrollIndicator={false}
-        initialNumToRender={5}
-        maxToRenderPerBatch={5}
-        windowSize={5}
-        removeClippedSubviews={true}
-        ListEmptyComponent={
-          !loading && (
-            <View className="flex-1 items-center justify-center py-8">
-              <Text className="text-gray-400 text-lg">No se encontraron personajes</Text>
-            </View>
-          )
-        }
-      />
-    </SafeAreaView>
+    <Layout>
+      <View style={{ flex: 1 }}>
+        <Header title="Personajes" />
+        <FlatList
+          data={data?.characters?.results}
+          renderItem={renderItem}
+          keyExtractor={(item) => item.id}
+          contentContainerStyle={{ padding: 16 }}
+          showsVerticalScrollIndicator={false}
+        />
+      </View>
+    </Layout>
   );
 } 

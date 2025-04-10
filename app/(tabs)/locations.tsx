@@ -1,25 +1,18 @@
-import { useState } from 'react';
-import { View, Text, FlatList, ActivityIndicator, TouchableOpacity } from 'react-native';
+import React from 'react';
+import { View, Text, FlatList, TouchableOpacity } from 'react-native';
+import { useRouter } from 'expo-router';
 import { gql, useQuery } from '@apollo/client';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-
-interface Location {
-  id: number;
-  name: string;
-  type: string;
-  dimension: string;
-}
+import { useTheme } from '../context/ThemeContext';
+import { lightTheme, darkTheme } from '../theme';
+import Layout from '../components/Layout';
+import Header from '../components/Header';
+import LoadingState from '../components/LoadingState';
+import ErrorState from '../components/ErrorState';
 
 const GET_LOCATIONS = gql`
-  query GetLocations($page: Int) {
-    locations(page: $page) {
-      info {
-        count
-        pages
-        next
-        prev
-      }
+  query GetLocations {
+    locations {
       results {
         id
         name
@@ -30,77 +23,79 @@ const GET_LOCATIONS = gql`
   }
 `;
 
+interface Location {
+  id: string;
+  name: string;
+  type: string;
+  dimension: string;
+}
+
 export default function LocationsScreen() {
-  const [page, setPage] = useState(1);
-  const { loading, error, data } = useQuery(GET_LOCATIONS, {
-    variables: { page },
-  });
+  const router = useRouter();
+  const { isDark } = useTheme();
+  const theme = isDark ? darkTheme : lightTheme;
+  const { loading, error, data, refetch } = useQuery(GET_LOCATIONS);
 
-  if (loading) {
-    return (
-      <SafeAreaView className="flex-1 items-center justify-center">
-        <ActivityIndicator size="large" color="#3B82F6" />
-      </SafeAreaView>
-    );
-  }
-
-  if (error) {
-    return (
-      <SafeAreaView className="flex-1 items-center justify-center">
-        <Text className="text-text-primary">Error: {error.message}</Text>
-      </SafeAreaView>
-    );
-  }
+  if (loading) return (
+    <Layout>
+      <LoadingState />
+    </Layout>
+  );
+  
+  if (error) return (
+    <Layout>
+      <ErrorState error={error} onRetry={refetch} />
+    </Layout>
+  );
 
   const renderItem = ({ item }: { item: Location }) => (
-    <TouchableOpacity 
-      className="bg-white p-4 mb-2 rounded-lg shadow-sm"
+    <TouchableOpacity
+      className="mb-4 rounded-xl p-4"
+      style={{ backgroundColor: theme.colors.card }}
+      onPress={() => router.push(`/location/${item.id}`)}
     >
-      <View className="flex-row items-center mb-2">
-        <MaterialCommunityIcons 
-          name="map-marker" 
-          size={24} 
-          color="#3B82F6" 
-        />
-        <Text className="ml-2 text-lg font-semibold text-text-primary">
-          {item.name}
-        </Text>
-      </View>
-      
-      <View className="flex-row items-center mb-1">
-        <MaterialCommunityIcons 
-          name="earth" 
-          size={20} 
-          color="#6B7280" 
-        />
-        <Text className="ml-2 text-text-secondary">
-          {item.type}
-        </Text>
-      </View>
-      
       <View className="flex-row items-center">
+        <View 
+          className="w-12 h-12 rounded-full items-center justify-center mr-4"
+          style={{ backgroundColor: theme.colors.secondary + '20' }}
+        >
+          <MaterialCommunityIcons
+            name="map-marker"
+            size={24}
+            color={theme.colors.secondary}
+          />
+        </View>
+        <View className="flex-1">
+          <Text className="text-lg font-bold mb-1" style={{ color: theme.colors.text }}>
+            {item.name}
+          </Text>
+          <View className="flex-row items-center">
+            <Text style={{ color: theme.colors.textSecondary }}>
+              {item.type} • {item.dimension}
+            </Text>
+          </View>
+        </View>
         <MaterialCommunityIcons 
-          name="cube-outline" 
-          size={20} 
-          color="#6B7280" 
+          name="chevron-right" 
+          size={24} 
+          color={theme.colors.textSecondary}
         />
-        <Text className="ml-2 text-text-secondary">
-          {item.dimension}
-        </Text>
       </View>
     </TouchableOpacity>
   );
 
   return (
-    <SafeAreaView className="flex-1 bg-background" edges={['bottom']}>
-      <FlatList
-        data={data.locations.results}
-        keyExtractor={(item) => item.id.toString()}
-        renderItem={renderItem}
-        onEndReached={() => setPage(page + 1)}
-        onEndReachedThreshold={0.5}
-        contentContainerStyle={{ padding: 16 }}
-      />
-    </SafeAreaView>
+    <Layout>
+      <View style={{ flex: 1 }}>
+        <Header title="Ubicaciones" />
+        <FlatList
+          data={data?.locations?.results}
+          renderItem={renderItem}
+          keyExtractor={(item) => item.id}
+          contentContainerStyle={{ padding: 16 }}
+          showsVerticalScrollIndicator={false}
+        />
+      </View>
+    </Layout>
   );
 } 

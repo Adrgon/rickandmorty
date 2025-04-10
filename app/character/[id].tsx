@@ -1,22 +1,15 @@
 import React, { useState } from 'react';
-import { View, Text, Image, ScrollView, Dimensions } from 'react-native';
-import { useLocalSearchParams, useRouter, Stack } from 'expo-router';
+import { View, Text, Image, ScrollView, TouchableOpacity, Dimensions } from 'react-native';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import { gql, useQuery } from '@apollo/client';
-import { LinearGradient } from 'expo-linear-gradient';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
-import Animated, { 
-  useAnimatedStyle, 
-  useSharedValue, 
-  withSpring,
-  withTiming,
-  Easing,
-  runOnJS 
-} from 'react-native-reanimated';
-import { Character, CharacterResponse } from '../types/character';
+import { useTheme } from '../context/ThemeContext';
+import { lightTheme, darkTheme } from '../theme';
+import Layout from '../components/Layout';
+import Header from '../components/Header';
 import LoadingState from '../components/LoadingState';
 import ErrorState from '../components/ErrorState';
-
-const { width } = Dimensions.get('window');
 
 const GET_CHARACTER = gql`
   query GetCharacter($id: ID!) {
@@ -37,178 +30,192 @@ const GET_CHARACTER = gql`
       episode {
         id
         name
-        episode
       }
     }
   }
 `;
 
-export default function CharacterDetail() {
+const { width } = Dimensions.get('window');
+
+export default function CharacterDetailScreen() {
   const { id } = useLocalSearchParams();
   const router = useRouter();
-  const translateX = useSharedValue(0);
-  const [isScrolling, setIsScrolling] = useState(false);
-  const [canGoBack, setCanGoBack] = useState(true);
+  const { isDark } = useTheme();
+  const theme = isDark ? darkTheme : lightTheme;
+  const [isExpanded, setIsExpanded] = useState(false);
 
-  const { loading, error, data, refetch } = useQuery<CharacterResponse>(GET_CHARACTER, {
+  const { loading, error, data } = useQuery(GET_CHARACTER, {
     variables: { id },
   });
 
-  const panGesture = Gesture
-    .Pan()
-    .enabled(canGoBack)
-    .minDistance(10)
-    .activeOffsetX(5)
-    .onStart(() => {
-      runOnJS(setIsScrolling)(false);
-    })
-    .onUpdate((event) => {
-      if (!isScrolling && event.translationX >= 0) {
-        const dragX = Math.min(event.translationX, width);
-        translateX.value = dragX * 0.9;
-      }
-    })
-    .onEnd((event) => {
-      if (!isScrolling) {
-        if (event.translationX > width * 0.25 || event.velocityX > 500) {
-          translateX.value = withTiming(width, {
-            duration: 250,
-            easing: Easing.out(Easing.ease)
-          }, () => {
-            runOnJS(router.back)();
-          });
-        } else {
-          translateX.value = withSpring(0, {
-            damping: 20,
-            stiffness: 200,
-            mass: 0.5
-          });
-        }
+  const panGesture = Gesture.Pan()
+    .onEnd((e) => {
+      if (e.translationX > 50) {
+        router.back();
       }
     });
 
-  const animatedStyle = useAnimatedStyle(() => ({
-    transform: [{ translateX: translateX.value }],
-  }));
-
-  if (loading) return <LoadingState message="Cargando personaje..." />;
+  if (loading) return (
+    <Layout>
+      <LoadingState />
+    </Layout>
+  );
+  
   if (error) return (
-    <ErrorState 
-      message={`Error al cargar el personaje: ${error.message}`}
-      onRetry={() => refetch()}
-    />
-  );
-  if (!data?.character) return (
-    <ErrorState 
-      message="No se encontró el personaje"
-      onRetry={() => refetch()}
-    />
+    <Layout>
+      <ErrorState error={error} />
+    </Layout>
   );
 
-  const character = data.character;
+  const character = data?.character;
+
+  const getStatusColor = (status: string) => {
+    switch (status?.toLowerCase()) {
+      case 'alive':
+        return theme.colors.success;
+      case 'dead':
+        return theme.colors.error;
+      default:
+        return theme.colors.warning;
+    }
+  };
 
   return (
-    <>
-      <Stack.Screen 
-        options={{ 
-          title: character?.name,
-          headerBackTitle: 'Volver',
-          headerStyle: {
-            backgroundColor: '#F3F4F6',
-          },
-          headerTintColor: '#1F2937',
-          gestureEnabled: false,
-        }} 
-      />
+    <Layout>
       <GestureDetector gesture={panGesture}>
-        <Animated.View className="flex-1 bg-gray-100" style={animatedStyle}>
+        <View style={{ flex: 1 }}>
+          <Header title="Detalles del Personaje" showBack />
           <ScrollView 
             className="flex-1"
-            onScrollBeginDrag={() => {
-              setIsScrolling(true);
-              setCanGoBack(false);
-            }}
-            onScrollEndDrag={() => {
-              setIsScrolling(false);
-              setCanGoBack(true);
-            }}
-            onMomentumScrollBegin={() => setCanGoBack(false)}
-            onMomentumScrollEnd={() => setCanGoBack(true)}
             bounces={false}
+            showsVerticalScrollIndicator={false}
           >
-            <View className="relative h-[400px]">
-              <Image 
-                source={{ uri: character.image }} 
-                className="w-full h-full" 
+            <View className="items-center">
+              <Image
+                source={{ uri: character.image }}
+                className="w-full h-80"
+                style={{ backgroundColor: theme.colors.card }}
               />
-              <LinearGradient
-                colors={['transparent', 'rgba(0,0,0,0.7)']}
-                className="absolute left-0 right-0 bottom-0 h-[200px]"
-              />
-              <View className="absolute bottom-0 left-0 right-0 p-5">
-                <Text className="text-white text-3xl font-bold mb-2 shadow-lg">
+              <View className="absolute top-4 right-4 bg-black/50 rounded-full p-2">
+                <MaterialCommunityIcons
+                  name="close"
+                  size={24}
+                  color="white"
+                  onPress={() => router.back()}
+                />
+              </View>
+            </View>
+
+            <View className="p-4">
+              <View className="flex-row items-center justify-between mb-4">
+                <Text className="text-2xl font-bold" style={{ color: theme.colors.text }}>
                   {character.name}
                 </Text>
-                <View className="flex-row items-center">
-                  <View 
-                    className={`w-2.5 h-2.5 rounded-full mr-2 ${
-                      character.status === 'Alive' ? 'bg-green-500' : 
-                      character.status === 'Dead' ? 'bg-red-500' : 'bg-gray-500'
-                    }`} 
-                  />
-                  <Text className="text-white text-lg shadow-lg">
-                    {character.status} - {character.species}
+                <View 
+                  className="px-3 py-1 rounded-full"
+                  style={{ backgroundColor: getStatusColor(character.status) + '20' }}
+                >
+                  <Text 
+                    className="text-sm font-medium"
+                    style={{ color: getStatusColor(character.status) }}
+                  >
+                    {character.status}
                   </Text>
                 </View>
               </View>
-            </View>
-            <View className="p-5 -mt-5">
-              <View className="mb-8">
-                <Text className="text-2xl font-bold text-gray-800 mb-4">
+
+              <View className="bg-white/5 rounded-xl p-4 mb-4">
+                <Text className="text-lg font-bold mb-2" style={{ color: theme.colors.text }}>
                   Información
                 </Text>
-                <View className="bg-white rounded-xl p-5 shadow-sm">
-                  <View className="mb-4 pb-4 border-b border-gray-200">
-                    <Text className="text-sm text-gray-500 mb-1">Género</Text>
-                    <Text className="text-base text-gray-800 font-medium">
+                <View className="space-y-2">
+                  <View className="flex-row items-center">
+                    <MaterialCommunityIcons 
+                      name="alien" 
+                      size={20} 
+                      color={theme.colors.primary}
+                      style={{ marginRight: 8 }}
+                    />
+                    <Text style={{ color: theme.colors.textSecondary }}>
+                      {character.species} {character.type && `- ${character.type}`}
+                    </Text>
+                  </View>
+                  <View className="flex-row items-center">
+                    <MaterialCommunityIcons 
+                      name="gender-male-female" 
+                      size={20} 
+                      color={theme.colors.primary}
+                      style={{ marginRight: 8 }}
+                    />
+                    <Text style={{ color: theme.colors.textSecondary }}>
                       {character.gender}
                     </Text>
                   </View>
-                  <View className="mb-4 pb-4 border-b border-gray-200">
-                    <Text className="text-sm text-gray-500 mb-1">Origen</Text>
-                    <Text className="text-base text-gray-800 font-medium">
+                  <View className="flex-row items-center">
+                    <MaterialCommunityIcons 
+                      name="earth" 
+                      size={20} 
+                      color={theme.colors.primary}
+                      style={{ marginRight: 8 }}
+                    />
+                    <Text style={{ color: theme.colors.textSecondary }}>
                       {character.origin.name}
                     </Text>
                   </View>
-                  <View className="mb-4">
-                    <Text className="text-sm text-gray-500 mb-1">Ubicación</Text>
-                    <Text className="text-base text-gray-800 font-medium">
+                  <View className="flex-row items-center">
+                    <MaterialCommunityIcons 
+                      name="map-marker" 
+                      size={20} 
+                      color={theme.colors.primary}
+                      style={{ marginRight: 8 }}
+                    />
+                    <Text style={{ color: theme.colors.textSecondary }}>
                       {character.location.name}
                     </Text>
                   </View>
                 </View>
               </View>
-              <View className="mb-8">
-                <Text className="text-2xl font-bold text-gray-800 mb-4">
-                  Episodios
-                </Text>
-                <View className="bg-white rounded-xl p-5 shadow-sm">
-                  {character.episode.map((ep) => (
-                    <View key={ep.id} className="mb-4 pb-4 border-b border-gray-200">
-                      <Text className="text-base text-gray-800 font-medium mb-1">
-                        {ep.name}
-                      </Text>
-                      <Text className="text-sm text-gray-500">
-                        {ep.episode}
-                      </Text>
-                    </View>
-                  ))}
+
+              <View className="bg-white/5 rounded-xl p-4">
+                <View className="flex-row items-center justify-between mb-4">
+                  <Text className="text-lg font-bold" style={{ color: theme.colors.text }}>
+                    Episodios
+                  </Text>
+                  <TouchableOpacity onPress={() => setIsExpanded(!isExpanded)}>
+                    <MaterialCommunityIcons
+                      name={isExpanded ? "chevron-up" : "chevron-down"}
+                      size={24}
+                      color={theme.colors.textSecondary}
+                    />
+                  </TouchableOpacity>
                 </View>
+                {isExpanded && (
+                  <View className="space-y-2">
+                    {character.episode.map((ep: any) => (
+                      <TouchableOpacity
+                        key={ep.id}
+                        className="flex-row items-center p-2 rounded-lg"
+                        style={{ backgroundColor: theme.colors.card }}
+                        onPress={() => router.push(`/episode/${ep.id}`)}
+                      >
+                        <MaterialCommunityIcons
+                          name="play-circle"
+                          size={20}
+                          color={theme.colors.primary}
+                          style={{ marginRight: 8 }}
+                        />
+                        <Text style={{ color: theme.colors.text }}>
+                          {ep.name}
+                        </Text>
+                      </TouchableOpacity>
+                    ))}
+                  </View>
+                )}
               </View>
             </View>
           </ScrollView>
-        </Animated.View>
+        </View>
       </GestureDetector>
-    </>
+    </Layout>
   );
 } 

@@ -1,26 +1,28 @@
 import { Tabs } from 'expo-router';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { useTheme } from '../context/ThemeContext';
+import { lightTheme, darkTheme } from '../theme';
 
 export default function TabLayout() {
+  const { isDark } = useTheme();
+  const theme = isDark ? darkTheme : lightTheme;
+
   return (
     <Tabs
       screenOptions={{
+        headerShown: false,
         tabBarStyle: {
-          backgroundColor: "#FFFFFF",
-          borderTopColor: "#E5E7EB",
+          backgroundColor: theme.colors.card,
+          borderTopColor: theme.colors.border,
         },
-        tabBarActiveTintColor: "#3B82F6",
-        tabBarInactiveTintColor: "#6B7280",
-        headerStyle: {
-          backgroundColor: "#F3F4F6",
-        },
-        headerTintColor: "#1F2937",
+        tabBarActiveTintColor: theme.colors.primary,
+        tabBarInactiveTintColor: theme.colors.text,
       }}
     >
       <Tabs.Screen
         name="home"
         options={{
-          title: "Inicio",
+          title: 'Inicio',
           tabBarIcon: ({ color, size }) => (
             <MaterialCommunityIcons name="home" size={size} color={color} />
           ),
@@ -32,7 +34,7 @@ export default function TabLayout() {
           title: "Personajes",
           tabBarIcon: ({ color, size }) => (
             <MaterialCommunityIcons
-              name="account-group"
+              name="account-multiple-check-outline"
               size={size}
               color={color}
             />
@@ -42,26 +44,18 @@ export default function TabLayout() {
       <Tabs.Screen
         name="locations"
         options={{
-          title: "Ubicaciones",
+          title: 'Ubicaciones',
           tabBarIcon: ({ color, size }) => (
-            <MaterialCommunityIcons
-              name="map-marker"
-              size={size}
-              color={color}
-            />
+            <MaterialCommunityIcons name="map-marker" size={size} color={color} />
           ),
         }}
       />
       <Tabs.Screen
         name="episodes"
         options={{
-          title: "Episodios",
+          title: 'Episodios',
           tabBarIcon: ({ color, size }) => (
-            <MaterialCommunityIcons
-              name="play-circle"
-              size={size}
-              color={color}
-            />
+            <MaterialCommunityIcons name="television-classic" size={size} color={color} />
           ),
         }}
       />
