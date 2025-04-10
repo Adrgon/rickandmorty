@@ -2,6 +2,14 @@
 
 This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
 
+## Screenshot
+
+1 ![ Home ](/screenshots/01-home.png)
+2 ![ Personajes ](/screenshots/02-characters.png)
+3 ![ Personaje ](/screenshots/021-character.png)
+4 ![ Ubicaciones ](/screenshots/03-locations.png)
+5 ![ Episodios ](/screenshots/04-episodes.png)
+
 ## Get started
 
 1. Install dependencies
