@@ -5,11 +5,11 @@ This is an [Expo](https://expo.dev) project created with [`create-expo-app`](htt
 ## Screenshot
 
 
-<img src="/screenshots/01-home.png" alt="Inicio"/>
-<img src="/screenshots/02-characters.png" alt="Personajes"/>
-<img src="/screenshots/021-character.png" alt="Personaje"/>
-<img src="/screenshots/03-locations.png" alt="Ubicacion"/>
-<img src="/screenshots/04-episodes.png" alt="Episodios"/>
+<img src="/screenshots/01-home.png" width="200" alt="Inicio"/>
+<img src="/screenshots/02-characters.png" width="200" alt="Personajes"/>
+<img src="/screenshots/021-character.png" width="200" alt="Personaje"/>
+<img src="/screenshots/03-locations.png" width="200" alt="Ubicacion"/>
+<img src="/screenshots/04-episodes.png" width="200" alt="Episodios"/>
 
 
 ## Get started
