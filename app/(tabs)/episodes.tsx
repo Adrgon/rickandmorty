@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { View, Text, FlatList, ActivityIndicator } from 'react-native';
+import { View, Text, FlatList, ActivityIndicator, TouchableOpacity } from 'react-native';
 import { gql, useQuery } from '@apollo/client';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
@@ -52,31 +52,54 @@ export default function EpisodesScreen() {
     );
   }
 
+  const renderItem = ({ item }: { item: Episode }) => (
+    <TouchableOpacity 
+      className="bg-white p-4 mb-2 rounded-lg shadow-sm"
+    >
+      <View className="flex-row items-center mb-2">
+        <MaterialCommunityIcons 
+          name="play-circle" 
+          size={24} 
+          color="#3B82F6" 
+        />
+        <Text className="ml-2 text-lg font-semibold text-text-primary">
+          {item.name}
+        </Text>
+      </View>
+      
+      <View className="flex-row items-center mb-1">
+        <MaterialCommunityIcons 
+          name="filmstrip" 
+          size={20} 
+          color="#6B7280" 
+        />
+        <Text className="ml-2 text-text-secondary">
+          {item.episode}
+        </Text>
+      </View>
+      
+      <View className="flex-row items-center">
+        <MaterialCommunityIcons 
+          name="calendar" 
+          size={20} 
+          color="#6B7280" 
+        />
+        <Text className="ml-2 text-text-secondary">
+          {item.air_date}
+        </Text>
+      </View>
+    </TouchableOpacity>
+  );
+
   return (
     <SafeAreaView className="flex-1 bg-background" edges={['bottom']}>
       <FlatList
         data={data.episodes.results}
         keyExtractor={(item) => item.id}
-        renderItem={({ item }) => (
-          <View className="bg-white p-4 m-2 rounded-lg shadow-sm flex-row items-center">
-            <View className="bg-purple-100 p-3 rounded-full mr-4">
-              <MaterialCommunityIcons name="television-play" size={24} color="#7C3AED" />
-            </View>
-            <View className="flex-1">
-              <Text className="text-lg font-bold text-text-primary">{item.name}</Text>
-              <View className="flex-row items-center mt-1">
-                <MaterialCommunityIcons name="movie" size={16} color="#6B7280" />
-                <Text className="text-text-secondary ml-1">Episode: {item.episode}</Text>
-              </View>
-              <View className="flex-row items-center mt-1">
-                <MaterialCommunityIcons name="calendar" size={16} color="#6B7280" />
-                <Text className="text-text-secondary ml-1">Air Date: {item.air_date}</Text>
-              </View>
-            </View>
-          </View>
-        )}
+        renderItem={renderItem}
         onEndReached={() => setPage(page + 1)}
         onEndReachedThreshold={0.5}
+        contentContainerStyle={{ padding: 16 }}
       />
     </SafeAreaView>
   );

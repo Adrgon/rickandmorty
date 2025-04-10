@@ -12,6 +12,9 @@ import Animated, {
   Easing,
   runOnJS 
 } from 'react-native-reanimated';
+import { Character, CharacterResponse } from '../types/character';
+import LoadingState from '../components/LoadingState';
+import ErrorState from '../components/ErrorState';
 
 const { width } = Dimensions.get('window');
 
@@ -47,37 +50,37 @@ export default function CharacterDetail() {
   const [isScrolling, setIsScrolling] = useState(false);
   const [canGoBack, setCanGoBack] = useState(true);
 
-  const { loading, error, data } = useQuery(GET_CHARACTER, {
+  const { loading, error, data, refetch } = useQuery<CharacterResponse>(GET_CHARACTER, {
     variables: { id },
   });
 
   const panGesture = Gesture
     .Pan()
     .enabled(canGoBack)
-    .minDistance(15)
-    .activeOffsetX(10)
+    .minDistance(10)
+    .activeOffsetX(5)
     .onStart(() => {
       runOnJS(setIsScrolling)(false);
     })
     .onUpdate((event) => {
       if (!isScrolling && event.translationX >= 0) {
         const dragX = Math.min(event.translationX, width);
-        translateX.value = dragX * 0.8;
+        translateX.value = dragX * 0.9;
       }
     })
     .onEnd((event) => {
       if (!isScrolling) {
-        if (event.translationX > width * 0.3 || event.velocityX > 800) {
+        if (event.translationX > width * 0.25 || event.velocityX > 500) {
           translateX.value = withTiming(width, {
-            duration: 300,
+            duration: 250,
             easing: Easing.out(Easing.ease)
           }, () => {
             runOnJS(router.back)();
           });
         } else {
           translateX.value = withSpring(0, {
-            damping: 15,
-            stiffness: 150,
+            damping: 20,
+            stiffness: 200,
             mass: 0.5
           });
         }
@@ -88,8 +91,19 @@ export default function CharacterDetail() {
     transform: [{ translateX: translateX.value }],
   }));
 
-  if (loading) return <Text className="text-text-primary">Cargando...</Text>;
-  if (error) return <Text className="text-red-500">Error: {error.message}</Text>;
+  if (loading) return <LoadingState message="Cargando personaje..." />;
+  if (error) return (
+    <ErrorState 
+      message={`Error al cargar el personaje: ${error.message}`}
+      onRetry={() => refetch()}
+    />
+  );
+  if (!data?.character) return (
+    <ErrorState 
+      message="No se encontró el personaje"
+      onRetry={() => refetch()}
+    />
+  );
 
   const character = data.character;
 
@@ -179,7 +193,7 @@ export default function CharacterDetail() {
                   Episodios
                 </Text>
                 <View className="bg-white rounded-xl p-5 shadow-sm">
-                  {character.episode.map((ep: any) => (
+                  {character.episode.map((ep) => (
                     <View key={ep.id} className="mb-4 pb-4 border-b border-gray-200">
                       <Text className="text-base text-gray-800 font-medium mb-1">
                         {ep.name}

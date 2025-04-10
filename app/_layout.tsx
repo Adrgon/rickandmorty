@@ -4,19 +4,7 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 const client = new ApolloClient({
   uri: 'https://rickandmortyapi.com/graphql',
-  cache: new InMemoryCache({
-    typePolicies: {
-      Query: {
-        fields: {
-          characters: {
-            merge(existing, incoming) {
-              return incoming;
-            },
-          },
-        },
-      },
-    },
-  }),
+  cache: new InMemoryCache(),
 });
 
 export default function RootLayout() {

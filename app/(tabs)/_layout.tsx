@@ -5,26 +5,22 @@ export default function TabLayout() {
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: '#3B82F6',
-        tabBarInactiveTintColor: '#6B7280',
         tabBarStyle: {
-          backgroundColor: '#FFFFFF',
-          borderTopWidth: 1,
-          borderTopColor: '#E5E7EB',
+          backgroundColor: "#FFFFFF",
+          borderTopColor: "#E5E7EB",
         },
+        tabBarActiveTintColor: "#3B82F6",
+        tabBarInactiveTintColor: "#6B7280",
         headerStyle: {
-          backgroundColor: '#F3F4F6',
+          backgroundColor: "#F3F4F6",
         },
-        headerTintColor: '#1F2937',
-        headerTitleStyle: {
-          fontWeight: 'bold',
-        },
+        headerTintColor: "#1F2937",
       }}
     >
       <Tabs.Screen
         name="home"
         options={{
-          title: 'Inicio',
+          title: "Inicio",
           tabBarIcon: ({ color, size }) => (
             <MaterialCommunityIcons name="home" size={size} color={color} />
           ),
@@ -33,27 +29,39 @@ export default function TabLayout() {
       <Tabs.Screen
         name="characters"
         options={{
-          title: 'Personajes',
+          title: "Personajes",
           tabBarIcon: ({ color, size }) => (
-            <MaterialCommunityIcons name="account-group" size={size} color={color} />
+            <MaterialCommunityIcons
+              name="account-group"
+              size={size}
+              color={color}
+            />
           ),
         }}
       />
       <Tabs.Screen
         name="locations"
         options={{
-          title: 'Ubicaciones',
+          title: "Ubicaciones",
           tabBarIcon: ({ color, size }) => (
-            <MaterialCommunityIcons name="map-marker" size={size} color={color} />
+            <MaterialCommunityIcons
+              name="map-marker"
+              size={size}
+              color={color}
+            />
           ),
         }}
       />
       <Tabs.Screen
         name="episodes"
         options={{
-          title: 'Episodios',
+          title: "Episodios",
           tabBarIcon: ({ color, size }) => (
-            <MaterialCommunityIcons name="television-play" size={size} color={color} />
+            <MaterialCommunityIcons
+              name="play-circle"
+              size={size}
+              color={color}
+            />
           ),
         }}
       />
