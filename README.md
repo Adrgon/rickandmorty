@@ -4,11 +4,11 @@ This is an [Expo](https://expo.dev) project created with [`create-expo-app`](htt
 
 ## Screenshot
 
-1 ![ Home ](/screenshots/01-home.png)
-2 ![ Personajes ](/screenshots/02-characters.png)
-3 ![ Personaje ](/screenshots/021-character.png)
-4 ![ Ubicaciones ](/screenshots/03-locations.png)
-5 ![ Episodios ](/screenshots/04-episodes.png)
+1 ![ Home ](/screenshots/01-home.png = 250)
+2 ![ Personajes ](/screenshots/02-characters.png = 250)
+3 ![ Personaje ](/screenshots/021-character.png = 250)
+4 ![ Ubicaciones ](/screenshots/03-locations.png = 250)
+5 ![ Episodios ](/screenshots/04-episodes.png = 250)
 
 ## Get started
 
