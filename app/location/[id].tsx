@@ -40,7 +40,7 @@ export default function LocationDetailScreen() {
   const { id } = useLocalSearchParams();
   const router = useRouter();
   const { isDark } = useTheme();
-  const colors = isDark ? darkTheme.colors : lightTheme.colors;
+  const theme = isDark ? darkTheme : lightTheme;
 
   const { loading, error, data } = useQuery(GET_LOCATION, {
     variables: { id },
@@ -68,55 +68,62 @@ export default function LocationDetailScreen() {
 
   const renderResident = ({ item }: { item: Resident }) => (
     <TouchableOpacity
-      onPress={() => router.push(`/character/${item.id}`)}
-      style={{
-        flexDirection: 'row',
-        alignItems: 'center',
-        padding: 10,
-        backgroundColor: colors.surface,
-        borderRadius: 8,
-        marginBottom: 8,
-      }}
+      className="p-4 rounded-xl mb-4"
+      style={{ backgroundColor: theme.colors.card }}
+      onPress={() => router.push(`/character/${item.id}` as any)}
     >
-      <Image
-        source={{ uri: item.image }}
-        style={{ width: 50, height: 50, borderRadius: 25 }}
-      />
-      <View style={{ marginLeft: 10, flex: 1 }}>
-        <Text style={{ color: colors.text, fontSize: 16, fontWeight: 'bold' }}>
-          {item.name}
-        </Text>
-        <View
-          style={{
-            flexDirection: 'row',
-            alignItems: 'center',
-            marginTop: 4,
-          }}
-        >
+      <View className="flex-row items-center">
+        <Image
+          source={{ uri: item.image }}
+          className="w-12 h-12 rounded-full mr-4"
+        />
+        <View className="flex-1">
+          <Text 
+            className="text-lg font-semibold" 
+            style={{ 
+              color: isDark ? theme.colors.text : theme.colors.text,
+              fontWeight: '600'
+            }}
+          >
+            {item.name}
+          </Text>
           <View
             style={{
-              width: 8,
-              height: 8,
-              borderRadius: 4,
-              backgroundColor:
-                item.status === 'Alive'
-                  ? colors.success
-                  : item.status === 'Dead'
-                  ? colors.error
-                  : colors.warning,
-              marginRight: 4,
+              flexDirection: 'row',
+              alignItems: 'center',
+              marginTop: 4,
             }}
-          />
-          <Text style={{ color: colors.textSecondary }}>
-            {item.status}
-          </Text>
+          >
+            <View
+              style={{
+                width: 8,
+                height: 8,
+                borderRadius: 4,
+                backgroundColor:
+                  item.status === 'Alive'
+                    ? theme.colors.success
+                    : item.status === 'Dead'
+                    ? theme.colors.error
+                    : theme.colors.warning,
+                marginRight: 4,
+              }}
+            />
+            <Text 
+              style={{ 
+                color: isDark ? theme.colors.textSecondary : theme.colors.textSecondary,
+                opacity: isDark ? 0.8 : 1
+              }}
+            >
+              {item.status}
+            </Text>
+          </View>
         </View>
+        <MaterialCommunityIcons
+          name="chevron-right" 
+          size={24} 
+          color={theme.colors.textSecondary} 
+        />
       </View>
-      <MaterialCommunityIcons
-        name="chevron-right"
-        size={24}
-        color={colors.textSecondary}
-      />
     </TouchableOpacity>
   );
 
@@ -127,7 +134,7 @@ export default function LocationDetailScreen() {
         <View
           style={{
             flex: 1,
-            backgroundColor: colors.background,
+            backgroundColor: theme.colors.background,
           }}
         >
           <ScrollView
@@ -136,7 +143,7 @@ export default function LocationDetailScreen() {
           >
             <View
               style={{
-                backgroundColor: colors.surface,
+                backgroundColor: theme.colors.surface,
                 borderRadius: 12,
                 padding: 16,
                 marginBottom: 16,
@@ -144,7 +151,7 @@ export default function LocationDetailScreen() {
             >
               <Text
                 style={{
-                  color: colors.text,
+                  color: theme.colors.text,
                   fontSize: 24,
                   fontWeight: 'bold',
                   marginBottom: 8,
@@ -162,10 +169,10 @@ export default function LocationDetailScreen() {
                 <MaterialCommunityIcons
                   name="map-marker"
                   size={20}
-                  color={colors.primary}
+                  color={theme.colors.primary}
                   style={{ marginRight: 8 }}
                 />
-                <Text style={{ color: colors.textSecondary }}>
+                <Text style={{ color: theme.colors.textSecondary }}>
                   {location.type}
                 </Text>
               </View>
@@ -178,10 +185,10 @@ export default function LocationDetailScreen() {
                 <MaterialCommunityIcons
                   name="earth"
                   size={20}
-                  color={colors.primary}
+                  color={theme.colors.primary}
                   style={{ marginRight: 8 }}
                 />
-                <Text style={{ color: colors.textSecondary }}>
+                <Text style={{ color: theme.colors.textSecondary }}>
                   {location.dimension}
                 </Text>
               </View>
@@ -189,7 +196,7 @@ export default function LocationDetailScreen() {
 
             <Text
               style={{
-                color: colors.text,
+                color: theme.colors.text,
                 fontSize: 18,
                 fontWeight: 'bold',
                 marginBottom: 16,

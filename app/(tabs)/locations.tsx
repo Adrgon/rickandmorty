@@ -50,35 +50,44 @@ export default function LocationsScreen() {
 
   const renderItem = ({ item }: { item: Location }) => (
     <TouchableOpacity
-      className="mb-4 rounded-xl p-4"
+      className="p-4 rounded-xl mb-4"
       style={{ backgroundColor: theme.colors.card }}
-      onPress={() => router.push(`/location/${item.id}`)}
+      onPress={() => router.push(`/location/${item.id}` as any)}
     >
       <View className="flex-row items-center">
         <View 
           className="w-12 h-12 rounded-full items-center justify-center mr-4"
-          style={{ backgroundColor: theme.colors.secondary + '20' }}
+          style={{ backgroundColor: theme.colors.primary + '20' }}
         >
           <MaterialCommunityIcons
             name="map-marker"
             size={24}
-            color={theme.colors.secondary}
+            color={theme.colors.primary}
           />
         </View>
         <View className="flex-1">
-          <Text className="text-lg font-bold mb-1" style={{ color: theme.colors.text }}>
+          <Text 
+            className="text-lg font-semibold" 
+            style={{ 
+              color: isDark ? theme.colors.text : theme.colors.text,
+              fontWeight: '600'
+            }}
+          >
             {item.name}
           </Text>
-          <View className="flex-row items-center">
-            <Text style={{ color: theme.colors.textSecondary }}>
-              {item.type} • {item.dimension}
-            </Text>
-          </View>
+          <Text 
+            style={{ 
+              color: isDark ? theme.colors.textSecondary : theme.colors.textSecondary,
+              opacity: isDark ? 0.8 : 1
+            }}
+          >
+            {item.type} • {item.dimension}
+          </Text>
         </View>
-        <MaterialCommunityIcons 
+        <MaterialCommunityIcons
           name="chevron-right" 
           size={24} 
-          color={theme.colors.textSecondary}
+          color={theme.colors.textSecondary} 
         />
       </View>
     </TouchableOpacity>
