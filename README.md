@@ -4,22 +4,22 @@ This is an [Expo](https://expo.dev) project created with [`create-expo-app`](htt
 
 ## Screenshot
 <div style="display:'flex'; justify-content:'space-betwen'; ">
-   <img src="/screenshots/IMG_001.PNG" width="250" alt="Inicio Light"/>
-   <img src="/screenshots/IMG_002.PNG" width="250" alt="Personajes  Light"/>
-   <img src="/screenshots/IMG_003.PNG" width="250" alt="Personaje  Light"/>
-   <img src="/screenshots/IMG_004.PNG" width="250" alt="Ubicaciones  Light"/>
-   <img src="/screenshots/IMG_005.PNG" width="250" alt="Ubicacion  Light"/>
-   <img src="/screenshots/IMG_006.PNG" width="250" alt="Episodios  Light"/>
-   <img src="/screenshots/IMG_007.PNG" width="250" alt="Episodio  Light"/>
+   <img src="/screenshots/IMG_001.PNG" width="200" alt="Inicio Light"/>
+   <img src="/screenshots/IMG_002.PNG" width="200" alt="Personajes  Light"/>
+   <img src="/screenshots/IMG_003.PNG" width="200" alt="Personaje  Light"/>
+   <img src="/screenshots/IMG_004.PNG" width="200" alt="Ubicaciones  Light"/>
+   <img src="/screenshots/IMG_005.PNG" width="200" alt="Ubicacion  Light"/>
+   <img src="/screenshots/IMG_006.PNG" width="200" alt="Episodios  Light"/>
+   <img src="/screenshots/IMG_007.PNG" width="200" alt="Episodio  Light"/>
 </div>
 <div style="display:'flex'; justify-content:'space-betwen'; ">
    <img src="/screenshots/IMG_008.PNG" width="250" alt="Inicio Light"/>
-   <img src="/screenshots/IMG_009.PNG" width="250" alt="Personajes  Light"/>
-   <img src="/screenshots/IMG_010.PNG" width="250" alt="Personaje  Light"/>
-   <img src="/screenshots/IMG_011.PNG" width="250" alt="Ubicaciones  Light"/>
-   <img src="/screenshots/IMG_012.PNG" width="250" alt="Ubicacion  Light"/>
-   <img src="/screenshots/IMG_013.PNG" width="250" alt="Episodios  Light"/>
-   <img src="/screenshots/IMG_014.PNG" width="250" alt="Episodio  Light"/>
+   <img src="/screenshots/IMG_009.PNG" width="200" alt="Personajes  Light"/>
+   <img src="/screenshots/IMG_010.PNG" width="200" alt="Personaje  Light"/>
+   <img src="/screenshots/IMG_011.PNG" width="200" alt="Ubicaciones  Light"/>
+   <img src="/screenshots/IMG_012.PNG" width="200" alt="Ubicacion  Light"/>
+   <img src="/screenshots/IMG_013.PNG" width="200" alt="Episodios  Light"/>
+   <img src="/screenshots/IMG_014.PNG" width="200" alt="Episodio  Light"/>
 </div>
 
 ## Get started
