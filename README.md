@@ -3,7 +3,7 @@
 This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
 
 ## Screenshot
-<div style="display:'flex'; justify-content:'center'">
+<div style="margin: 0 auto; display:'flex'; justify-content:'center'">
    <h2>Modo Claro</h2>
    <img src="/screenshots/IMG_001.PNG" width="220" alt="Inicio Light"/>
    <img src="/screenshots/IMG_002.PNG" width="220" alt="Personajes  Light"/>
@@ -13,7 +13,7 @@ This is an [Expo](https://expo.dev) project created with [`create-expo-app`](htt
    <img src="/screenshots/IMG_006.PNG" width="220" alt="Episodios  Light"/>
    <img src="/screenshots/IMG_007.PNG" width="220" alt="Episodio  Light"/>
 </div>
-<div style="display:'flex'; justify-content:'center';margin-top: 20px">
+<div style="margin: 10px auto; display:'flex'; justify-content:'center'">
    <h2>Modo Oscuro</h2>
    <img src="/screenshots/IMG_008.PNG" width="220" alt="Inicio Light"/>
    <img src="/screenshots/IMG_009.PNG" width="220" alt="Personajes  Light"/>
