@@ -3,14 +3,24 @@
 This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
 
 ## Screenshot
-
-
-<img src="/screenshots/01-home.png" width="250" alt="Inicio"/>
-<img src="/screenshots/02-characters.png" width="250" alt="Personajes"/>
-<img src="/screenshots/021-character.png" width="250" alt="Personaje"/>
-<img src="/screenshots/03-locations.png" width="250" alt="Ubicacion"/>
-<img src="/screenshots/04-episodes.png" width="250" alt="Episodios"/>
-
+<div style="display:'flex'; justify-content:'space-betwen'; ">
+   <img src="/screenshots/IMG_001.PNG" width="250" alt="Inicio Light"/>
+   <img src="/screenshots/IMG_002.PNG" width="250" alt="Personajes  Light"/>
+   <img src="/screenshots/IMG_003.PNG" width="250" alt="Personaje  Light"/>
+   <img src="/screenshots/IMG_004.PNG" width="250" alt="Ubicaciones  Light"/>
+   <img src="/screenshots/IMG_005.PNG" width="250" alt="Ubicacion  Light"/>
+   <img src="/screenshots/IMG_006.PNG" width="250" alt="Episodios  Light"/>
+   <img src="/screenshots/IMG_007.PNG" width="250" alt="Episodio  Light"/>
+</div>
+<div style="display:'flex'; justify-content:'space-betwen'; ">
+   <img src="/screenshots/IMG_008.PNG" width="250" alt="Inicio Light"/>
+   <img src="/screenshots/IMG_009.PNG" width="250" alt="Personajes  Light"/>
+   <img src="/screenshots/IMG_010.PNG" width="250" alt="Personaje  Light"/>
+   <img src="/screenshots/IMG_011.PNG" width="250" alt="Ubicaciones  Light"/>
+   <img src="/screenshots/IMG_012.PNG" width="250" alt="Ubicacion  Light"/>
+   <img src="/screenshots/IMG_013.PNG" width="250" alt="Episodios  Light"/>
+   <img src="/screenshots/IMG_014.PNG" width="250" alt="Episodio  Light"/>
+</div>
 
 ## Get started
 
